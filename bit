@@ -1,0 +1,66 @@
+#!/bin/python3
+import sys
+import string
+
+
+def bit(argument: str) -> None:
+    char_notation: str = str()
+    decimal_notation: int = int()
+    hexdecimal_notation: str = str()
+    binary_notation: str = str()
+    bit_count_notation: str = str()
+    bit_count_notation_label = str()
+
+    if argument.startswith("0x") and all(character in string.hexdigits for character in argument[2:]):
+        decimal_notation = int(argument, 16)
+
+    elif argument.startswith("0b") and all(digit in "01" for digit in argument[2:]):
+        decimal_notation = int(argument, 2)
+
+    elif argument.startswith("~") and len(argument) > 1:
+        char_notation = argument[1]
+        decimal_notation = ord(char_notation)
+
+    elif argument.isnumeric():
+        decimal_notation = int(argument)
+
+    else:
+        char_notation = argument[0]
+        decimal_notation = ord(char_notation)
+
+    hexdecimal_notation = hex(decimal_notation)
+    binary_notation = bin(decimal_notation)
+    bit_count_notation = len(binary_notation) - 2
+
+    if bit_count_notation <= 20:
+        char_notation = chr(decimal_notation)
+
+    if bit_count_notation > 64:
+        decimal_notation = '?'
+        hexdecimal_notation = '?'
+        binary_notation = '?'
+
+    match bit_count_notation:
+        case 4:
+            bit_count_notation_label = "(nibble)"
+
+        case 8:
+            bit_count_notation_label = "(byte)"
+
+        case 16:
+            bit_count_notation_label = "(word)"
+
+        case 32:
+            bit_count_notation_label = "(dword)"
+
+        case 64:
+            bit_count_notation_label = "(qword)"
+
+    
+    print(f"{"'" + char_notation + "'" if bit_count_notation <= 20 else '?'}\t{decimal_notation}\t{hexdecimal_notation}\t{binary_notation}\t{bit_count_notation} bit {bit_count_notation_label}")
+
+
+if __name__ == "__main__":
+    if len(sys.argv) >= 2:
+        bit(sys.argv[1])
+
